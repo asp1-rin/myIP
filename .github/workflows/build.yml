@@ -3,8 +3,6 @@ name: Assembly Build Pipeline
 on:
   push:
     branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
 
 jobs:
   build-windows:
@@ -21,7 +19,8 @@ jobs:
     - name: Compile and Link
       run: |
         nasm -f win64 main.asm -o main.o
-        x86_64-w64-mingw32-gcc main.o -o my_ip_tool.exe -lws2_32 -static
+        x86_64-w64-mingw32-windres resource.rc -o resource.o
+        x86_64-w64-mingw32-gcc main.o resource.o -o my_ip_tool.exe -lws2_32 -static
 
     - name: Upload Artifact
       uses: actions/upload-artifact@v4
